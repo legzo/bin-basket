@@ -26,43 +26,8 @@ $(document).bind('pagebeforecreate', function() {
 	for(var id in players) {
 		var p = players[id];
 		console.log(id, p.percent);
-		
-		var $li = $('<li/>');
-		$li.attr("id", id);
-		$li.attr("class", "player");
-		
-		var $fieldset = $('<fieldset class="ui-grid-a"/>');
-		
-		var $blockA = $('<div class="ui-block-a"/>');
-		var $h2 = $('<h2 data-role="fieldcontain"/>');
-		$h2.html(p.name);
-		
-		var $scores = $('<div class="scores"/>');
-		var $percent = $('<span class="percent"/>');
-		$percent.html(p.percent +'%');
-		var $attempts = $('<span class="attempts"/>');
-		$attempts.html(' ('+p.attempts+' shoots)');
-		
-		$scores.append($percent).append($attempts);
-		
-		$blockA.append($h2).append($scores);
-		
-		var $blockB = $('<div class="ui-block-b buttons"/>');
-		var $hitButton = $('<a href="#" data-role="button" data-icon="plus"	data-iconpos="notext" data-inline="true">hit</a>');
-		$hitButton.attr("id", id + "-hit");
-		var $missButton = $('<a href="#" data-role="button" data-icon="minus" data-iconpos="notext" data-inline="true">miss</a>');
-		$missButton.attr("id", id + "-miss");
-		
-		$blockB.append($hitButton).append($missButton);
-		
-		$fieldset.append($blockA).append($blockB);
-		
-		$li.append($fieldset);
-		
-		$('#players-list').append($li);
-		
+		addPlayer(id, p);
 	};
-	
 	
 	$('.player .ui-btn').live('vclick', function() {
 		console.log(this.id);
@@ -70,3 +35,39 @@ $(document).bind('pagebeforecreate', function() {
 		$('#my_toast').toast('show');
 	});
 });	
+
+var addPlayer = function(id, p) {
+	var $li = $('<li/>');
+	$li.attr("id", id);
+	$li.attr("class", "player");
+	
+	var $fieldset = $('<fieldset class="ui-grid-a"/>');
+	
+	var $blockA = $('<div class="ui-block-a"/>');
+	var $h2 = $('<h2 data-role="fieldcontain"/>');
+	$h2.html(p.name);
+	
+	var $scores = $('<div class="scores"/>');
+	var $percent = $('<span class="percent"/>');
+	$percent.html(p.percent +'%');
+	var $attempts = $('<span class="attempts"/>');
+	$attempts.html(' ('+p.attempts+' shoots)');
+	
+	$scores.append($percent).append($attempts);
+	
+	$blockA.append($h2).append($scores);
+	
+	var $blockB = $('<div class="ui-block-b buttons"/>');
+	var $hitButton = $('<a href="#" data-role="button" data-icon="plus"	data-iconpos="notext" data-inline="true">hit</a>');
+	$hitButton.attr("id", id + "-hit");
+	var $missButton = $('<a href="#" data-role="button" data-icon="minus" data-iconpos="notext" data-inline="true">miss</a>');
+	$missButton.attr("id", id + "-miss");
+	
+	$blockB.append($hitButton).append($missButton);
+	
+	$fieldset.append($blockA).append($blockB);
+	
+	$li.append($fieldset);
+	
+	$('#players-list').append($li);
+}
