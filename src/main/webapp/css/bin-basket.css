@@ -1,6 +1,19 @@
-.player .ui-grid-a .ui-block-a { width: 80% }
-.player .ui-grid-a .ui-block-b { width: 20%; }
+.player .ui-grid-a .ui-block-a { width: 50% }
+.player .ui-grid-a .ui-block-b { width: 50%; }
+
+.player .ui-br { border: none; }
+
+.player h2 { padding-bottom: 0; margin-bottom: 0; padding-top: 0; font-size: 1.8em; }
 
 .ui-btn { padding: 12px;}
 
-h1 { margin: 20px;}
+.buttons { text-align: right }
+
+.scores { font-size: 0.8em; text-align: right;}
+
+.scores .percent { font-size: 1.2em;}
+.scores .total { color: #666;}
+
+h1 { margin: 20px; color: navy; text-align: right;}
+
+.sub { margin: 0; padding : 0 }
