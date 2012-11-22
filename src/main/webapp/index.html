@@ -3,77 +3,33 @@
 <head>
 <meta charset=utf-8 />
 <title>Yo</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet"
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1">
+<link
+	rel="stylesheet"
 	href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
-<link rel="stylesheet" href="css/bin-basket.css" />
+<link
+	rel="stylesheet"
+	href="css/bin-basket.css" />
 <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-<script
-	src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+<script src="toast.js"></script>
+<script src="app.js"></script>
 </head>
 
 <body>
 	<div data-role="page">
 
+		<div
+			id="my_toast"
+			class="ui-toast"
+			data-role="toast">whats up</div>
+
 		<h1>rankings:</h1>
 
-		<ul data-role="listview">
-			<li class="player">
-				<fieldset class="ui-grid-a">
-					<div class="ui-block-a">
-						<h2 data-role="fieldcontain">Charlotte</h2>
-						<div class="scores"><span class="percent">14%</span> <span class="total">(46 shoots)</span></div>
-					</div>
-					<div class="ui-block-b buttons">
-						<a href="#" data-role="button" data-icon="plus"
-							data-iconpos="notext" data-inline="true">Hit</a> <a href="#"
-							data-role="button" data-icon="minus" data-iconpos="notext"
-							data-inline="true">Miss</a>
-					</div>
-				</fieldset>
-			</li>
-			<li class="player">
-				<fieldset class="ui-grid-a">
-					<div class="ui-block-a">
-						<h2 data-role="fieldcontain">Julien F</h2>
-						<div class="scores"><span class="percent">46%</span> <span class="total">(134 shoots)</span></div>
-					</div>
-					<div class="ui-block-b buttons">
-						<a href="#" data-role="button" data-icon="plus"
-							data-iconpos="notext" data-inline="true">Hit</a> <a href="#"
-							data-role="button" data-icon="minus" data-iconpos="notext"
-							data-inline="true">Miss</a>
-					</div>
-				</fieldset>
-			</li>
-			<li class="player">
-				<fieldset class="ui-grid-a">
-					<div class="ui-block-a">
-						<h2 data-role="fieldcontain">Mehdi</h2>
-						<div class="scores"><span class="percent">25%</span> <span class="total">(112 shoots)</span></div>
-					</div>
-					<div class="ui-block-b buttons">
-						<a href="#" data-role="button" data-icon="plus"
-							data-iconpos="notext" data-inline="true">Hit</a> <a href="#"
-							data-role="button" data-icon="minus" data-iconpos="notext"
-							data-inline="true">Miss</a>
-					</div>
-				</fieldset>
-			</li>
-				<li class="player">
-				<fieldset class="ui-grid-a">
-					<div class="ui-block-a">
-						<h2 data-role="fieldcontain">Julien</h2>
-						<div class="scores"><span class="percent">21%</span> <span class="total">(170 shoots)</span></div>
-					</div>
-					<div class="ui-block-b buttons">
-						<a href="#" data-role="button" data-icon="plus"
-							data-iconpos="notext" data-inline="true">Hit</a> <a href="#"
-							data-role="button" data-icon="minus" data-iconpos="notext"
-							data-inline="true">Miss</a>
-					</div>
-				</fieldset>
-			</li>
+		<ul id="players-list" data-role="listview">
+		
 		</ul>
 
 	</div>

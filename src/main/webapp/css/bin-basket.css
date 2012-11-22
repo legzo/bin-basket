@@ -1,19 +1,65 @@
-.player .ui-grid-a .ui-block-a { width: 50% }
-.player .ui-grid-a .ui-block-b { width: 50%; }
+.player .ui-grid-a .ui-block-a {
+	width: 50%
+}
 
-.player .ui-br { border: none; }
+.player .ui-grid-a .ui-block-b {
+	width: 50%;
+}
 
-.player h2 { padding-bottom: 0; margin-bottom: 0; padding-top: 0; font-size: 1.8em; }
+.player .ui-br {
+	border: none;
+}
 
-.ui-btn { padding: 12px;}
+.player h2 {
+	padding-bottom: 0;
+	margin-bottom: 0;
+	padding-top: 0;
+	font-size: 1.8em;
+}
 
-.buttons { text-align: right }
+.ui-btn {
+	padding: 12px;
+}
 
-.scores { font-size: 0.8em; text-align: right;}
+.buttons {
+	text-align: right
+}
 
-.scores .percent { font-size: 1.2em;}
-.scores .total { color: #666;}
+.scores {
+	font-size: 0.8em;
+	text-align: right;
+}
 
-h1 { margin: 20px; color: navy; text-align: right;}
+.scores .percent {
+	font-size: 1.2em;
+}
 
-.sub { margin: 0; padding : 0 }
+.scores .attempts {
+	color: #666;
+}
+
+h1 {
+	margin: 20px;
+	color: navy;
+	text-align: right;
+}
+
+.sub {
+	margin: 0;
+	padding: 0
+}
+
+.ui-toast {
+	color: white;
+	background-color: #555;
+	padding: 6px;
+	font-size: 10pt;
+	font-weight: normal;
+	border: 1px solid #666;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	position: fixed;
+	z-index: 5000;
+	text-shadow: none;
+}
