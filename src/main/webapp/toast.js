@@ -16,53 +16,53 @@
 			initSelector : ":jqmData(role='toast')"
 		},
 		_create : function() {
-			var $el = this.element
-			$el.addClass('ui-toast')
-			$el.hide()
-			self = this
+			var $el = this.element;
+			$el.addClass('ui-toast');
+			$el.hide();
+			self = this;
 			$('body').bind('showToast', function() {
-				self.cancel()
-			})
+				self.cancel();
+			});
 		},
 		/**
 		 * fadeIn the toast notification and automatically fades
 		 * out after the given time
 		 */
 		show : function() {
-			$('body').trigger('showToast') // cancels all
+			$('body').trigger('showToast'); // cancels all
 											// active toasts
 
-			var $el = this.element
+			var $el = this.element;
 
-			var bw = $('body').width()
-			var bh = $('body').height()
+			var bw = $('body').width();
+			var bh = $('body').height();
 
-			var top = (bh * 3 / 4) - $el.height() / 2
-			var left = bw / 2 - $el.width() / 2
+			var top = (bh * 3 / 4) - $el.height() / 2;
+			var left = bw / 2 - $el.width() / 2;
 
-			$el.css('top', top + 'px')
-			$el.css('left', left + 'px')
+			$el.css('top', top + 'px');
+			$el.css('left', left + 'px');
 
 			// fade in and fade out after the given time
-			var millis = 3000
+			var millis = 3000;
 			if (this.options.duration === 'short')
-				millis = 2000
+				millis = 2000;
 			else if (this.options.duration === 'long')
-				millis = 6000
+				millis = 6000;
 			else if (!isNaN(this.options.duration))
-				millis = parseInt(this.options.duration)
+				millis = parseInt(this.options.duration);
 			else
 				jQuery
-						.error('mobile.toast: options.duration has to be short, long or a integer value')
+						.error('mobile.toast: options.duration has to be short, long or a integer value');
 
-			$el.fadeIn().delay(millis).fadeOut('slow')
+			$el.fadeIn().delay(millis).fadeOut('slow');
 		},
 		/**
 		 * cancel and hides the toast
 		 */
 		cancel : function() {
 			var $el = this.element;
-			$el.stop(true).hide()
+			$el.stop(true).hide();
 		}
 	});
 

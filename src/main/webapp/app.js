@@ -70,4 +70,4 @@ var addPlayer = function(id, p) {
 	$li.append($fieldset);
 	
 	$('#players-list').append($li);
-}
+};

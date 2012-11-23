@@ -17,5 +17,15 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
 	<context:component-scan base-package="org.elitefactory" />
 	<context:annotation-config />
 
-
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+	
+	<jaxrs:server id="scoresRest" address="/">
+		<jaxrs:serviceBeans>
+			<ref bean="scoresService" />
+		</jaxrs:serviceBeans>
+	</jaxrs:server>
+	
+	<bean id="scoresService" class="org.elitefactory.bb.ScoresService" />
+	
 </beans>
