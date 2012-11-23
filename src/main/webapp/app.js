@@ -8,6 +8,8 @@ $(document).bind('pagebeforecreate', function() {
 		var player = params[0];
 		var result = params[1];
 		
+		$('#li_'+player).addClass("in-progress");
+		
 		$.ajax({
 		   url:'/rest/attempt/' + player + "/" + result,
 		   success: function(resultObject) {
@@ -45,7 +47,9 @@ var refreshData = function() {
 			for(var id in players) {
 				var p = players[id];
 				refreshPlayer(p);
+				$('#li_'+p.playerLogin).removeClass("in-progress");
 			};
+			
 		} 
 	});
 };
@@ -53,7 +57,7 @@ var refreshData = function() {
 var addPlayer = function(p) {
 	var id = p.playerLogin;
 	var $li = $('<li/>');
-	$li.attr("id", id);
+	$li.attr("id", "li_" + id);
 	$li.attr("class", "player");
 	
 	var $fieldset = $('<fieldset class="ui-grid-a"/>');

@@ -17,6 +17,14 @@
 	font-size: 1.8em;
 }
 
+.in-progress {
+	background-color: #ccc;
+}
+
+.in-progress .buttons {
+	display: none;
+}
+
 .ui-btn {
 	padding: 12px;
 }
