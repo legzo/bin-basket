@@ -56,7 +56,7 @@ public class ScoresService {
 	@GET
 	@Path("/scores")
 	@Produces("application/json")
-	public String getScores() throws IOException {
+	public String getScores() throws IOException, InterruptedException {
 		final List<Score> scores = new ArrayList<Score>();
 
 		for (final Player player : players.values()) {
@@ -88,6 +88,8 @@ public class ScoresService {
 
 			scores.add(score);
 		}
+
+		Thread.sleep(400);
 
 		return prettyWriter.writeValueAsString(scores);
 	}

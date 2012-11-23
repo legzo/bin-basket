@@ -8,14 +8,16 @@ $(document).bind('pagebeforecreate', function() {
 		var player = params[0];
 		var result = params[1];
 		
+		$.mobile.loading('show', {
+			text: 'saving',
+			textVisible: true,
+		});
+		
 		$('#li_'+player).addClass("in-progress");
 		
 		$.ajax({
 		   url:'/rest/attempt/' + player + "/" + result,
 		   success: function(resultObject) {
-			   $('#my_toast').html('saved ' + result + ' for ' + player);
-			   $('#my_toast').toast('show');
-			   
 			   refreshData();
 		   } 
 		});
@@ -48,6 +50,7 @@ var refreshData = function() {
 				var p = players[id];
 				refreshPlayer(p);
 				$('#li_'+p.playerLogin).removeClass("in-progress");
+				$.mobile.loading('hide');
 			};
 			
 		} 

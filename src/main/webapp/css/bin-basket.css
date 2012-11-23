@@ -17,12 +17,12 @@
 	font-size: 1.8em;
 }
 
-.in-progress {
-	background-color: #ccc;
-}
-
 .in-progress .buttons {
 	display: none;
+}
+
+.in-progress .ui-block-a {
+	opacity: 0.2;
 }
 
 .ui-btn {
@@ -52,22 +52,12 @@ h1 {
 	text-align: right;
 }
 
+.ui-loader h1 {
+	color: white;
+}
+
 .sub {
 	margin: 0;
 	padding: 0
 }
 
-.ui-toast {
-	color: white;
-	background-color: #555;
-	padding: 6px;
-	font-size: 10pt;
-	font-weight: normal;
-	border: 1px solid #666;
-	-webkit-border-radius: 6px;
-	-moz-border-radius: 6px;
-	border-radius: 6px;
-	position: fixed;
-	z-index: 5000;
-	text-shadow: none;
-}
