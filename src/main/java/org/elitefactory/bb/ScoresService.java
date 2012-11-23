@@ -60,7 +60,7 @@ public class ScoresService {
 		final List<Score> scores = new ArrayList<Score>();
 
 		for (final Player player : players.values()) {
-			final Score score = new Score(player.getLogin());
+			final Score score = new Score(player);
 
 			final List<Attempt> attempts = getAllAttempts(player);
 

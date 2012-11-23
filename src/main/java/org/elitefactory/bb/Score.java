@@ -6,13 +6,15 @@ import java.util.List;
 public class Score {
 
 	private final String playerLogin;
+	private final String playerName;
 	private long nbOfAttempts;
 	private float accuracy;
 	private final List<Attempt> recentAttempts = new ArrayList<Attempt>(20);
 
-	public Score(final String playerLogin) {
+	public Score(final Player player) {
 		super();
-		this.playerLogin = playerLogin;
+		playerLogin = player.getLogin();
+		playerName = player.getDisplayName();
 	}
 
 	public void setAccuracy(final float accuracy) {
@@ -37,6 +39,10 @@ public class Score {
 
 	public String getPlayerLogin() {
 		return playerLogin;
+	}
+
+	public String getPlayerName() {
+		return playerName;
 	}
 
 }

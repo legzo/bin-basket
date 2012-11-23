@@ -1,42 +1,57 @@
 $(document).bind('pagebeforecreate', function() {
 
-	var players = {
-		"cmo" : {
-			name : "Charlotte",
-			percent : "14",
-			attempts : "46",
-		},	
-		"jfl" : {
-			name : "Julien F",
-			percent : "46",
-			attempts : "141",
-		},	
-		"mma" : {
-			name : "Mehdi",
-			percent : "25",
-			attempts : "112",
-		},	
-		"jte" : {
-			name : "Julien T",
-			percent : "21",
-			attempts : "170",
-		}
-	};
-	
-	for(var id in players) {
-		var p = players[id];
-		console.log(id, p.percent);
-		addPlayer(id, p);
-	};
+	getFirstData();
 	
 	$('.player .ui-btn').live('vclick', function() {
-		console.log(this.id);
-		$('#my_toast').html('fired: ' + this.id);
-		$('#my_toast').toast('show');
+		var params = this.id.split('-');
+		
+		var player = params[0];
+		var result = params[1];
+		
+		$.ajax({
+		   url:'/rest/attempt/' + player + "/" + result,
+		   success: function(resultObject) {
+			   $('#my_toast').html('saved ' + result + ' for ' + player);
+			   $('#my_toast').toast('show');
+			   
+			   refreshData();
+		   } 
+		});
 	});
-});	
+});
 
-var addPlayer = function(id, p) {
+var getFirstData = function() {
+	
+	$.ajax({
+	   url:'/rest/scores',
+	   success: function(players) {
+		   
+		   for(var id in players) {
+				var p = players[id];
+				addPlayer(p);
+			};
+			
+			$('#players-list').listview('refresh');
+			$('#my_page').trigger( "create" );
+	   } 
+	});
+};
+
+var refreshData = function() {
+	
+	$.ajax({
+		url:'/rest/scores',
+		success: function(players) {
+			for(var id in players) {
+				var p = players[id];
+				refreshPlayer(p);
+			};
+		} 
+	});
+};
+
+var addPlayer = function(p) {
+	var id = p.playerLogin;
 	var $li = $('<li/>');
 	$li.attr("id", id);
 	$li.attr("class", "player");
@@ -45,15 +60,15 @@ var addPlayer = function(id, p) {
 	
 	var $blockA = $('<div class="ui-block-a"/>');
 	var $h2 = $('<h2 data-role="fieldcontain"/>');
-	$h2.html(p.name);
+	$h2.html(p.playerName);
 	
 	var $scores = $('<div class="scores"/>');
-	var $percent = $('<span class="percent"/>');
-	$percent.html(p.percent +'%');
-	var $attempts = $('<span class="attempts"/>');
-	$attempts.html(' ('+p.attempts+' shoots)');
+	var $accuracy = $('<span id="accuracy_' + id + '" class="accuracy"/>');
+	$accuracy.html(p.accuracy.toFixed(3) +'%');
+	var $attempts = $('<span id="attempts_' + id + '" class="attempts"/>');
+	$attempts.html(' ('+p.nbOfAttempts+' shoots)');
 	
-	$scores.append($percent).append($attempts);
+	$scores.append($accuracy).append($attempts);
 	
 	$blockA.append($h2).append($scores);
 	
@@ -70,4 +85,10 @@ var addPlayer = function(id, p) {
 	$li.append($fieldset);
 	
 	$('#players-list').append($li);
+};
+
+var refreshPlayer = function(p) {
+	var id = p.playerLogin;
+	$('#attempts_' + id).html(' ('+p.nbOfAttempts+' shoots)');
+	$('#accuracy_' + id).html(p.accuracy.toFixed(3) +'%');
 };
