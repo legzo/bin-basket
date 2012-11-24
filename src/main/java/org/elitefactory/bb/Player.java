@@ -1,11 +1,22 @@
 package org.elitefactory.bb;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Player {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	private String login;
 	private String displayName;
+
+	public Player() {
+	}
 
 	public Player(final String login, final String displayName) {
 		super();

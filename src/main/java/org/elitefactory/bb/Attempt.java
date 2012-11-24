@@ -2,13 +2,24 @@ package org.elitefactory.bb;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Attempt {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	private Date time;
 	private String playerLogin;
 	private Result result;
+
+	public Attempt() {
+	}
 
 	public Attempt(final Date time, final String playerLogin, final Result result) {
 		super();
