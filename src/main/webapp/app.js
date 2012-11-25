@@ -73,7 +73,7 @@ var addPlayer = function(p) {
 	var $accuracy = $('<span id="accuracy_' + id + '" class="accuracy"/>');
 	$accuracy.html(p.accuracy.toFixed(3) +'%');
 	var $attempts = $('<span id="attempts_' + id + '" class="attempts"/>');
-	$attempts.html('('+p.nbOfAttempts + ' shoots) @');
+	$attempts.html(p.nbOfAttempts + ' shoots @');
 	
 	$scores.append($attempts).append($accuracy);
 	
@@ -102,7 +102,7 @@ var addPlayer = function(p) {
 
 var refreshPlayer = function(p) {
 	var id = p.playerLogin;
-	$('#attempts_' + id).html('('+p.nbOfAttempts+' shoots) @');
+	$('#attempts_' + id).html(p.nbOfAttempts+' shoots @');
 	$('#accuracy_' + id).html(p.accuracy.toFixed(3) +'%');
 	$('#recentAccuracy_' + id).html(p.recentAccuracy.toFixed(3) +'%');
 };
