@@ -35,4 +35,10 @@ public class AttemptsDao {
 		return em.createQuery("select player from Player player").getResultList();
 	}
 
+	@Transactional
+	public void clearAll() {
+		em.createQuery("delete from Attempt attempt").executeUpdate();
+		em.createQuery("delete from Player player").executeUpdate();
+	}
+
 }

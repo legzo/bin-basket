@@ -140,7 +140,7 @@ public class ScoresService {
 	@Path("/clearAll")
 	public Response clearAll() throws IOException {
 		logger.debug("Clearing everything");
-
+		attemptsDao.clearAll();
 		return Response.ok().build();
 	}
 

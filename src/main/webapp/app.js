@@ -52,7 +52,6 @@ var refreshData = function() {
 				$('#li_'+p.playerLogin).removeClass("in-progress");
 				$.mobile.loading('hide');
 			};
-			
 		} 
 	});
 };
@@ -71,15 +70,12 @@ var addPlayer = function(p) {
 	
 	var $scores = $('<div class="total scores"/>');
 	var $accuracy = $('<span id="accuracy_' + id + '" class="accuracy"/>');
-	$accuracy.html(p.accuracy.toFixed(3) +'%');
 	var $attempts = $('<span id="attempts_' + id + '" class="attempts"/>');
-	$attempts.html(p.nbOfAttempts + ' shoots @');
 	
 	$scores.append($attempts).append($accuracy);
 	
 	var $recentScores = $('<div class="recent scores"/>');
 	var $recentAccuracy = $('<span id="recentAccuracy_' + id + '" class="accuracy"/>');
-	$recentAccuracy.html(p.recentAccuracy.toFixed(3) +'%');
 	
 	$recentScores.append($recentAccuracy);
 	
@@ -98,11 +94,16 @@ var addPlayer = function(p) {
 	$li.append($fieldset);
 	
 	$('#players-list').append($li);
+
+	refreshPlayer(p);
 };
 
 var refreshPlayer = function(p) {
 	var id = p.playerLogin;
 	$('#attempts_' + id).html(p.nbOfAttempts+' shoots @');
-	$('#accuracy_' + id).html(p.accuracy.toFixed(3) +'%');
-	$('#recentAccuracy_' + id).html(p.recentAccuracy.toFixed(3) +'%');
+	
+	var accuracy = p.accuracy.toFixed(3) +'';
+	var recentAccuracy = p.recentAccuracy.toFixed(3) +'';
+	$('#accuracy_' + id).html(accuracy.substring(1,5) );
+	$('#recentAccuracy_' + id).html(recentAccuracy.substring(1,5));
 };
