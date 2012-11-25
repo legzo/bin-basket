@@ -48,4 +48,9 @@ public class Player {
 		this.displayName = displayName;
 	}
 
+	@Override
+	public String toString() {
+		return "Player [id=" + id + ", login=" + login + ", displayName=" + displayName + "]";
+	}
+
 }

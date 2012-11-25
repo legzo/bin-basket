@@ -26,7 +26,7 @@ public class AttemptsDao {
 
 	@SuppressWarnings("unchecked")
 	public List<Attempt> getPlayerAttempts(Player player) {
-		return em.createQuery("select attempt from Attempt attempt where attempt.playerLogin = :login")
+		return em.createQuery("select attempt from Attempt attempt where attempt.playerLogin = :login order by time")
 				.setParameter("login", player.getLogin()).getResultList();
 	}
 

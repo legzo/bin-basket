@@ -8,6 +8,7 @@ public class Score {
 	private final String playerLogin;
 	private final String playerName;
 	private long nbOfAttempts;
+	private float recentAccuracy;
 	private float accuracy;
 	private final List<Attempt> recentAttempts = new ArrayList<Attempt>(20);
 
@@ -43,6 +44,14 @@ public class Score {
 
 	public String getPlayerName() {
 		return playerName;
+	}
+
+	public float getRecentAccuracy() {
+		return recentAccuracy;
+	}
+
+	public void setRecentAccuracy(float recentAccuracy) {
+		this.recentAccuracy = recentAccuracy;
 	}
 
 }

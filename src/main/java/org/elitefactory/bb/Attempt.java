@@ -64,4 +64,9 @@ public class Attempt {
 		hit, miss;
 	}
 
+	@Override
+	public String toString() {
+		return "Attempt [id=" + id + ", time=" + time + ", playerLogin=" + playerLogin + ", result=" + result + "]";
+	}
+
 }

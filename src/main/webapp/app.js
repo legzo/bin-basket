@@ -69,15 +69,21 @@ var addPlayer = function(p) {
 	var $h2 = $('<h2 data-role="fieldcontain"/>');
 	$h2.html(p.playerName);
 	
-	var $scores = $('<div class="scores"/>');
+	var $scores = $('<div class="total scores"/>');
 	var $accuracy = $('<span id="accuracy_' + id + '" class="accuracy"/>');
 	$accuracy.html(p.accuracy.toFixed(3) +'%');
 	var $attempts = $('<span id="attempts_' + id + '" class="attempts"/>');
-	$attempts.html(' ('+p.nbOfAttempts+' shoots)');
+	$attempts.html('('+p.nbOfAttempts + ' shoots) @');
 	
-	$scores.append($accuracy).append($attempts);
+	$scores.append($attempts).append($accuracy);
 	
-	$blockA.append($h2).append($scores);
+	var $recentScores = $('<div class="recent scores"/>');
+	var $recentAccuracy = $('<span id="recentAccuracy_' + id + '" class="accuracy"/>');
+	$recentAccuracy.html(p.recentAccuracy.toFixed(3) +'%');
+	
+	$recentScores.append($recentAccuracy);
+	
+	$blockA.append($h2).append($scores).append($recentScores);
 	
 	var $blockB = $('<div class="ui-block-b buttons"/>');
 	var $hitButton = $('<a href="#" data-role="button" data-icon="plus"	data-iconpos="notext" data-inline="true">hit</a>');
@@ -96,6 +102,7 @@ var addPlayer = function(p) {
 
 var refreshPlayer = function(p) {
 	var id = p.playerLogin;
-	$('#attempts_' + id).html(' ('+p.nbOfAttempts+' shoots)');
+	$('#attempts_' + id).html('('+p.nbOfAttempts+' shoots) @');
 	$('#accuracy_' + id).html(p.accuracy.toFixed(3) +'%');
+	$('#recentAccuracy_' + id).html(p.recentAccuracy.toFixed(3) +'%');
 };

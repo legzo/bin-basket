@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ScoresService {
 
+	private static final int NB_OF_RECENT_ATTEMPTS = 30;
+
 	private static final Logger logger = LoggerFactory.getLogger(ScoresService.class);
 
 	private static ObjectWriter prettyWriter = new ObjectMapper().writer(new DefaultPrettyPrinter());
@@ -67,15 +69,30 @@ public class ScoresService {
 				}
 			}
 
+			if (nbOfAttempts > 0) {
+				score.setAccuracy((float) hits / nbOfAttempts);
+			}
+
+			int nbOfRecentAttempts = nbOfAttempts;
+
 			List<Attempt> lastAttempts = attempts;
-			if (nbOfAttempts > 20) {
-				lastAttempts = lastAttempts.subList(nbOfAttempts - 20, nbOfAttempts);
+			if (nbOfAttempts > NB_OF_RECENT_ATTEMPTS) {
+				lastAttempts = lastAttempts.subList(nbOfAttempts - NB_OF_RECENT_ATTEMPTS, nbOfAttempts);
+				nbOfRecentAttempts = NB_OF_RECENT_ATTEMPTS;
+			}
+
+			long recentHits = 0;
+
+			for (final Attempt attempt : lastAttempts) {
+				if (attempt.getResult() == Result.hit) {
+					recentHits++;
+				}
 			}
 
 			score.getRecentAttempts().addAll(lastAttempts);
 
-			if (nbOfAttempts > 0) {
-				score.setAccuracy((float) hits / nbOfAttempts);
+			if (nbOfRecentAttempts > 0) {
+				score.setRecentAccuracy((float) recentHits / nbOfRecentAttempts);
 			}
 
 			scores.add(score);
@@ -115,6 +132,14 @@ public class ScoresService {
 
 		Player player = new Player(login, displayName);
 		attemptsDao.savePlayer(player);
+
+		return Response.ok().build();
+	}
+
+	@GET
+	@Path("/clearAll")
+	public Response clearAll() throws IOException {
+		logger.debug("Clearing everything");
 
 		return Response.ok().build();
 	}
