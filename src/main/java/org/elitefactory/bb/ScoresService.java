@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
-import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.elitefactory.bb.Attempt.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,8 @@ public class ScoresService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ScoresService.class);
 
-	private static ObjectWriter prettyWriter = new ObjectMapper().writer(new DefaultPrettyPrinter());
+	// private static ObjectWriter writer = new ObjectMapper().writer(new DefaultPrettyPrinter());
+	private static ObjectWriter writer = new ObjectMapper().writer();
 
 	@Autowired
 	private AttemptsDao attemptsDao;
@@ -43,7 +43,7 @@ public class ScoresService {
 	public String getPlayers() throws IOException {
 		List<Player> players = attemptsDao.getPlayers();
 
-		return prettyWriter.writeValueAsString(players);
+		return writer.writeValueAsString(players);
 	}
 
 	@GET
@@ -61,17 +61,19 @@ public class ScoresService {
 			final int nbOfAttempts = attempts.size();
 			score.setNbOfAttempts(nbOfAttempts);
 
-			long hits = 0;
+			int hits = 0;
+			int allSoFar = 0;
 
 			for (final Attempt attempt : attempts) {
 				if (attempt.getResult() == Result.hit) {
 					hits++;
 				}
+				allSoFar++;
+
+				score.getAccuracies().put(Integer.valueOf(allSoFar), (float) hits / allSoFar);
 			}
 
-			if (nbOfAttempts > 0) {
-				score.setAccuracy((float) hits / nbOfAttempts);
-			}
+			score.setAccuracy((float) hits / nbOfAttempts);
 
 			int nbOfRecentAttempts = nbOfAttempts;
 
@@ -89,7 +91,7 @@ public class ScoresService {
 				}
 			}
 
-			score.getRecentAttempts().addAll(lastAttempts);
+			// score.getRecentAttempts().addAll(lastAttempts);
 
 			if (nbOfRecentAttempts > 0) {
 				score.setRecentAccuracy((float) recentHits / nbOfRecentAttempts);
@@ -98,7 +100,7 @@ public class ScoresService {
 			scores.add(score);
 		}
 
-		return prettyWriter.writeValueAsString(scores);
+		return writer.writeValueAsString(scores);
 	}
 
 	private List<Attempt> getAllAttempts(final Player player) {

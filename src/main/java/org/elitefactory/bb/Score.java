@@ -2,6 +2,8 @@ package org.elitefactory.bb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Score {
 
@@ -11,6 +13,15 @@ public class Score {
 	private float recentAccuracy;
 	private float accuracy;
 	private final List<Attempt> recentAttempts = new ArrayList<Attempt>(20);
+	private Map<Integer, Float> accuracies = new TreeMap<Integer, Float>();
+
+	public Map<Integer, Float> getAccuracies() {
+		return accuracies;
+	}
+
+	public void setAccuracies(Map<Integer, Float> accuracies) {
+		this.accuracies = accuracies;
+	}
 
 	public Score(final Player player) {
 		super();
