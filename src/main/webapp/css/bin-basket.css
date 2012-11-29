@@ -85,3 +85,27 @@ h1.title {
 	left: 10px;
 	width: 55px;
 }
+
+.graph {
+	position: absolute;
+	top: -4px;
+	left: -5px;
+}
+
+.area {
+  fill: rgb(78, 16, 174);
+  opacity: 0.2;
+}
+
+.line {
+  stroke: rgb(78, 16, 174);
+  fill: none;
+  stroke-width: 1.5px;
+  opacity: 0.6;
+}
+
+.xAxis {
+  stroke: black;
+  stroke-dasharray: 2, 3;
+  stroke-width: .5px;
+}
