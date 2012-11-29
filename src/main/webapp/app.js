@@ -174,10 +174,12 @@ var addPlayer = function(p) {
 
 var refreshPlayer = function(p) {
 	var id = p.playerLogin;
-	$('#attempts_' + id).html(p.nbOfAttempts+' shoots @');
+	$('#attempts_' + id).html(p.nbOfAttempts + ' shoots @');
 	
-	var accuracy = p.accuracy.toFixed(3) +'';
-	var recentAccuracy = p.recentAccuracy.toFixed(3) +'';
-	$('#accuracy_' + id).html(accuracy.substring(1,5) );
-	$('#recentAccuracy_' + id).html(recentAccuracy.substring(1,5));
+	$('#accuracy_' + id).html(asPercent(p.accuracy));
+	$('#recentAccuracy_' + id).html(asPercent(p.recentAccuracy));
 };
+
+var asPercent = function(acc) {
+	return (acc * 100).toFixed(1)+ '%';
+} 
