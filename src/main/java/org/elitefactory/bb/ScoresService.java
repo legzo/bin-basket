@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ScoresService {
 
-	private static final int NB_OF_RECENT_ATTEMPTS = 30;
+	private static final int NB_OF_RECENT_ATTEMPTS = 50;
 
 	private static final Logger logger = LoggerFactory.getLogger(ScoresService.class);
 
@@ -70,7 +70,10 @@ public class ScoresService {
 				}
 				allSoFar++;
 
-				score.getAccuracies().put(Integer.valueOf(allSoFar), (float) hits / allSoFar);
+				if (allSoFar > nbOfAttempts - NB_OF_RECENT_ATTEMPTS) {
+					score.getAccuracies().put(Integer.valueOf(allSoFar), (float) hits / allSoFar);
+				}
+
 			}
 
 			score.setAccuracy((float) hits / nbOfAttempts);

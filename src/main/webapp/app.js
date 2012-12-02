@@ -70,9 +70,9 @@ var initGraph = function(login, accuracies) {
 		});
 	}
 	
-	var margin = {top: 2, right: 2, bottom: 2, left: 2},
+	var margin = {top: 0, right: 0, bottom: 2, left: 2},
 	width = 110 - margin.left - margin.right,
-	height = 30 - margin.top - margin.bottom;
+	height = 35 - margin.top - margin.bottom;
 	
 	var yMax = 0.35;
 	
@@ -112,7 +112,7 @@ var initGraph = function(login, accuracies) {
 		.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 	
-	svg.append("path")
+	var selectArea = svg.append("path")
 	    .datum(data)
 	    .attr("class", "area")
 	    .attr("d", area);
@@ -151,7 +151,7 @@ var addPlayer = function(p) {
 	var $recentAccuracy = $('<div id="recentAccuracy_' + id + '" class="accuracy"/>');
 	var $graph = $('<div id="graph_' + id + '" class="graph"/>');
 	
-	$recentScores.append($recentAccuracy).append($graph);
+	$recentScores.append($graph).append($recentAccuracy);
 	
 	$blockA.append($h2).append($scores).append($recentScores);
 	

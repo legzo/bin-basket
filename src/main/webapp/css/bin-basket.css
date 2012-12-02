@@ -1,5 +1,5 @@
 .player {
-	padding: .3em 15px !important;
+	padding: .3em 5px .1em 5px !important;
 }
 
 .player .ui-grid-a .ui-block-a {
@@ -56,9 +56,9 @@
 }
 
 .scores.recent {
-	font-size: 1.4em;
+	font-size: 1.2em;
 	position: relative;
-	top: -5px;
+	top: 0px;
 	color: #FFA400;
 }
 
@@ -88,8 +88,7 @@ h1.title {
 
 .graph {
 	position: absolute;
-	top: -4px;
-	left: -5px;
+	top: -12px;
 }
 
 .area {
