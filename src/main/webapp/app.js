@@ -1,3 +1,7 @@
+var height = 35;
+var width = 110;
+var yMax = 0.35;
+
 $(document).bind('pagebeforecreate', function() {
 
 	getFirstData();
@@ -33,8 +37,6 @@ var getFirstData = function() {
 		   for(var id in players) {
 				var p = players[id];
 				addPlayer(p);
-				
-				initGraph(p.playerLogin, p.accuracies);
 		   };
 			
 			$('#players-list').listview('refresh');
@@ -58,7 +60,7 @@ var refreshData = function() {
 	});
 };
 
-var initGraph = function(login, accuracies) {
+var getData = function(accuracies) {
 	var data = [];
 	
 	for(var id in accuracies) {
@@ -70,11 +72,11 @@ var initGraph = function(login, accuracies) {
 		});
 	}
 	
-	var margin = {top: 0, right: 0, bottom: 2, left: 2},
-	width = 110 - margin.left - margin.right,
-	height = 35 - margin.top - margin.bottom;
-	
-	var yMax = 0.35;
+	return data;
+}
+
+var updateGraph = function(login, accuracies) {
+	var data = getData(accuracies);
 	
 	var x = d3.scale.linear()
 		.range([0, width]);
@@ -106,28 +108,40 @@ var initGraph = function(login, accuracies) {
 	    .x(function(d) { return x(d.id); })
 		.y(function(d) { return y(yMax - 0.1); });
 	
-	var svg = d3.select("#graph_" + login).append("svg")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
-		.append("g")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	var allData = [data];
+
+	var chart = d3
+		.select("#graph_" + login + " svg");
 	
-	var selectArea = svg.append("path")
-	    .datum(data)
+	chart.selectAll("path.area")
+		.data(allData)
+		.enter()
+		.append("path")
 	    .attr("class", "area")
 	    .attr("d", area);
+
+	chart.selectAll("path.area")
+		.data(allData)
+		.attr("d", area);
 	
-	svg.append("path")
-		.datum(data)
+	chart.selectAll("path.line")
+		.data(allData)
+		.enter()
+		.append("path")
 		.attr("class", "line")
 		.attr("d", line);
 	
-	 svg.append("path")
-	 	.datum(data)
+	chart.selectAll("path.line")
+		.data(allData)
+		.attr("d", line);
+	
+	chart.selectAll("path.xAxis")
+		.data(allData)
+		.enter()
+		.append("path")
 	    .attr("class", "xAxis")
 	    .attr("d", xAxis);
 }
-
 
 var addPlayer = function(p) {
 	var id = p.playerLogin;
@@ -169,6 +183,10 @@ var addPlayer = function(p) {
 	
 	$('#players-list').append($li);
 
+	var svg = d3.select("#graph_" + id).append("svg")
+		.attr("width", width)
+		.attr("height", height);
+
 	refreshPlayer(p);
 };
 
@@ -178,6 +196,8 @@ var refreshPlayer = function(p) {
 	
 	$('#accuracy_' + id).html(asPercent(p.accuracy));
 	$('#recentAccuracy_' + id).html(asPercent(p.recentAccuracy));
+	
+	updateGraph(p.playerLogin, p.accuracies);
 };
 
 var asPercent = function(acc) {
