@@ -1,6 +1,5 @@
-var height = 35;
+var height = 25;
 var width = 110;
-var yMax = 0.35;
 
 $(document).bind('pagebeforecreate', function() {
 
@@ -66,10 +65,10 @@ var getData = function(accuracies) {
 	for(var id in accuracies) {
 		var a = accuracies[id];
 		
-		data.push({
-			id: parseInt(id),
-			value: a
-		});
+		data.push([
+			parseInt(id),
+			a
+		]);
 	}
 	
 	return data;
@@ -78,69 +77,18 @@ var getData = function(accuracies) {
 var updateGraph = function(login, accuracies) {
 	var data = getData(accuracies);
 	
-	var x = d3.scale.linear()
-		.range([0, width]);
-	
-	var y = d3.scale.linear()
-		.range([height, 0]);
-	
-	x.domain(d3.extent(data, function(d) { return d.id; }));
-	y.domain([0, yMax]);
-	
-	var xAxis = d3.svg.axis()
-		.scale(x)
-		.orient("bottom");
-	
-	var yAxis = d3.svg.axis()
-		.scale(y)
-		.orient("left");
-	
-	var area = d3.svg.area()
-		.x(function(d) { return x(d.id); })
-		.y0(height)
-		.y1(function(d) { return y(d.value); });
-	
-	var line = d3.svg.line()
-		.x(function(d) { return x(d.id); })
-		.y(function(d) { return y(d.value); });
-
-	var xAxis = d3.svg.line()
-	    .x(function(d) { return x(d.id); })
-		.y(function(d) { return y(yMax - 0.1); });
-	
+	var horizon = d3.horizon()
+	    .width(width)
+	    .height(height)
+	    .bands(4);
+		
 	var allData = [data];
 
 	var chart = d3
 		.select("#graph_" + login + " svg");
 	
-	chart.selectAll("path.area")
-		.data(allData)
-		.enter()
-		.append("path")
-	    .attr("class", "area")
-	    .attr("d", area);
-
-	chart.selectAll("path.area")
-		.data(allData)
-		.attr("d", area);
-	
-	chart.selectAll("path.line")
-		.data(allData)
-		.enter()
-		.append("path")
-		.attr("class", "line")
-		.attr("d", line);
-	
-	chart.selectAll("path.line")
-		.data(allData)
-		.attr("d", line);
-	
-	chart.selectAll("path.xAxis")
-		.data(allData)
-		.enter()
-		.append("path")
-	    .attr("class", "xAxis")
-	    .attr("d", xAxis);
+	chart.data(allData)
+	    .call(horizon);
 }
 
 var addPlayer = function(p) {

@@ -88,23 +88,10 @@ h1.title {
 
 .graph {
 	position: absolute;
-	top: -12px;
+	top: -3px;
+	opacity: .7;
 }
 
-.area {
-  fill: rgb(78, 16, 174);
-  opacity: 0.2;
-}
-
-.line {
-  stroke: rgb(78, 16, 174);
-  fill: none;
-  stroke-width: 1.5px;
-  opacity: 0.6;
-}
-
-.xAxis {
-  stroke: black;
-  stroke-dasharray: 2, 3;
-  stroke-width: .5px;
+.graph svg {
+	border-radius: 2px;
 }
