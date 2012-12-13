@@ -54,56 +54,48 @@ public class ScoresService {
 		List<Player> players = attemptsDao.getPlayers();
 
 		for (final Player player : players) {
+			logger.debug("Player {}\n", player.getDisplayName());
 			final Score score = new Score(player);
 
 			final List<Attempt> attempts = getAllAttempts(player);
 
 			final int nbOfAttempts = attempts.size();
 			score.setNbOfAttempts(nbOfAttempts);
+			score.setAccuracy(getMeanForList(attempts));
 
-			int hits = 0;
-			int allSoFar = 0;
+			int limit = nbOfAttempts - NB_OF_RECENT_ATTEMPTS;
+			if (limit < 0) {
+				limit = 0;
+			}
 
-			for (final Attempt attempt : attempts) {
-				if (attempt.getResult() == Result.hit) {
-					hits++;
+			for (int index = nbOfAttempts; index > limit; index--) {
+				int start = index - NB_OF_RECENT_ATTEMPTS;
+				if (start < 0) {
+					start = 0;
 				}
-				allSoFar++;
-
-				if (allSoFar > nbOfAttempts - NB_OF_RECENT_ATTEMPTS) {
-					score.getAccuracies().put(Integer.valueOf(allSoFar), (float) hits / allSoFar);
-				}
-
+				List<Attempt> subList = attempts.subList(start, index);
+				float recentMean = getMeanForList(subList);
+				logger.debug("{}-{}, m={}", new Object[] { start, index, recentMean });
+				score.getAccuracies().put(index, recentMean);
 			}
 
-			score.setAccuracy((float) hits / nbOfAttempts);
-
-			int nbOfRecentAttempts = nbOfAttempts;
-
-			List<Attempt> lastAttempts = attempts;
-			if (nbOfAttempts > NB_OF_RECENT_ATTEMPTS) {
-				lastAttempts = lastAttempts.subList(nbOfAttempts - NB_OF_RECENT_ATTEMPTS, nbOfAttempts);
-				nbOfRecentAttempts = NB_OF_RECENT_ATTEMPTS;
-			}
-
-			long recentHits = 0;
-
-			for (final Attempt attempt : lastAttempts) {
-				if (attempt.getResult() == Result.hit) {
-					recentHits++;
-				}
-			}
-
-			// score.getRecentAttempts().addAll(lastAttempts);
-
-			if (nbOfRecentAttempts > 0) {
-				score.setRecentAccuracy((float) recentHits / nbOfRecentAttempts);
-			}
+			score.setRecentAccuracy(score.getAccuracies().get(nbOfAttempts));
 
 			scores.add(score);
 		}
 
 		return writer.writeValueAsString(scores);
+	}
+
+	private float getMeanForList(final List<Attempt> attempts) {
+		int hits = 0;
+		for (Attempt attempt : attempts) {
+			if (attempt.getResult() == Result.hit) {
+				hits++;
+			}
+		}
+
+		return (float) hits / attempts.size();
 	}
 
 	private List<Attempt> getAllAttempts(final Player player) {

@@ -59,7 +59,7 @@ var refreshData = function() {
 	});
 };
 
-var getData = function(accuracies) {
+var getData = function(accuracies, accuracy) {
 	var data = [];
 	
 	for(var id in accuracies) {
@@ -67,20 +67,23 @@ var getData = function(accuracies) {
 		
 		data.push([
 			parseInt(id),
-			a
+			a - accuracy
 		]);
 	}
 	
 	return data;
 }
 
-var updateGraph = function(login, accuracies) {
-	var data = getData(accuracies);
+var updateGraph = function(login, accuracies, accuracy) {
+	var data = getData(accuracies, accuracy);
 	
 	var horizon = d3.horizon()
 	    .width(width)
 	    .height(height)
-	    .bands(4);
+	    .mode("mirror")
+	    .bands(3)
+	    .tension(0.7)
+	    .interpolate("bundle");
 		
 	var allData = [data];
 
@@ -145,7 +148,7 @@ var refreshPlayer = function(p) {
 	$('#accuracy_' + id).html(asPercent(p.accuracy));
 	$('#recentAccuracy_' + id).html(asPercent(p.recentAccuracy));
 	
-	updateGraph(p.playerLogin, p.accuracies);
+	updateGraph(p.playerLogin, p.accuracies, p.accuracy);
 };
 
 var asPercent = function(acc) {

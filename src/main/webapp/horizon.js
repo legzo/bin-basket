@@ -3,6 +3,7 @@
     var bands = 1, // between 1 and 5, typically
         mode = "offset", // or mirror
         interpolate = "linear", // or basis, monotone, step-before, etc.
+        tension = 0.6, // or basis, monotone, step-before, etc.
         x = d3_horizonX,
         y = d3_horizonY,
         w = 960,
@@ -82,6 +83,7 @@
 
         var d0 = d3_horizonArea
             .interpolate(interpolate)
+            .tension(tension)
             .x(function(d) { return x0(d[0]); })
             .y0(h * bands)
             .y1(function(d) { return h * bands - y0(d[1]); })
@@ -144,6 +146,12 @@
       if (!arguments.length) return interpolate;
       interpolate = x + "";
       return horizon;
+    };
+   
+    horizon.tension = function(x) {
+    	if (!arguments.length) return tension;
+    	tension = x + "";
+    	return horizon;
     };
 
     horizon.x = function(z) {
