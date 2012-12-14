@@ -97,6 +97,30 @@ h1.title a {
 	opacity: .7;
 }
 
+.playerLine path {
+	fill: none;
+	stroke-width: 2px;
+}
+
+.playerLine text {
+	font-size: 0.8em;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis text {
+	display: none;	
+}
+
+.axis {
+	font-size: 0.8em;
+}
+
 .graph svg {
 	border-radius: 2px;
 }

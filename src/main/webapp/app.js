@@ -2,7 +2,6 @@ var height = 25;
 var width = 110;
 var initComplete = false;
 
-
 var initForPlayersPage = function() {
 		console.log("players page pagebeforecreate");
 		getFirstData();
@@ -31,19 +30,99 @@ var initForPlayersPage = function() {
 
 var initForChartsPage = function() {
 	console.log("charts page pagebeforecreate");
-	if(!initComplete) {
-	} else {
-		$('#chartsPage').trigger( "create" );
-	}
+	d3.json("/rest/scores", function(data, error) {
+		
+		var players = getDataForLineChart(data);
+		
+		var margin = {top: 20, right: 120, bottom: 20, left: 50},
+	    width = 400 - margin.left - margin.right,
+	    height = 200 - margin.top - margin.bottom;
+
+		var x = d3.scale.linear()
+	    	.range([0, width]);
+
+		var y = d3.scale.linear()
+		    .range([height, 0]);
+
+		var color = d3.scale.category20c();
+
+		var xAxis = d3.svg.axis()
+		    .scale(x)
+		    .orient("bottom");
+
+		var yAxis = d3.svg.axis()
+		    .scale(y)
+		    .orient("left");
+
+		var line = d3.svg.line()
+		    .interpolate("basis")
+		    .x(function(d) { return x(d.index);	})
+		    .y(function(d) { return y(d.value); });
+
+		var svg = d3.select("#chart").append("svg")
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		color.domain(d3.keys(players));
+
+		x.domain([0, 100]);
+
+		y.domain([0, 0.6]);
+
+		svg.append("g")
+		      .attr("class", "x axis")
+		      .attr("transform", "translate(0," + height + ")")
+		      .call(xAxis);
+
+		svg.append("g")
+		    .attr("class", "y axis")
+		    .call(yAxis);
+
+		var player = svg.selectAll(".playerLine")
+		    .data(players)
+		    .enter().append("g")
+		    .attr("class", "playerLine");
+
+		  player.append("path")
+		      .attr("class", "line")
+		      .attr("d",  function(d) { return line(d.values); })
+		      .style("stroke", function(d) { return color(d.name); });
+		  
+		  player.append("text")
+		      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+		      .attr("transform", function(d) { return "translate(" + x(d.value.index) + "," + y(d.value.value) + ")"; })
+		      .attr("x", 3)
+		      .attr("dy", ".35em")
+		      .text(function(d) { return d.name; });
+	});
+}
+
+var getDataForLineChart = function(data) {
+	return d3.keys(data).map(function(i) {
+		var idx = 1;
+		var values = [];
+		
+		for(var id in data[i].accuracies) {
+			var a = data[i].accuracies[id];
+			
+			values.push({index: idx, value: a});
+			idx++;
+		}
+		
+		return {
+			name 	: data[i].playerLogin.toLowerCase(),
+			values 	: values
+		};
+	});
 }
 
 var getFirstData = function() {
 	console.log("getting first data");
-	$.ajax({
-	   url:'/rest/scores',
-	   success: function(players) {
-		   
-		   for(var id in players) {
+	
+	d3.json("/rest/scores", function(players, error) {
+		 for(var id in players) {
 				var p = players[id];
 				addPlayer(p);
 		   };
@@ -51,22 +130,19 @@ var getFirstData = function() {
 		   console.log("triggering refresh");
 		   $('#players-list').listview('refresh');
 		   $('#playersPage').trigger( "create" );
-	   } 
 	});
+	
 };
 
 var refreshData = function() {
 	console.log("refreshing data");
-	$.ajax({
-		url:'/rest/scores',
-		success: function(players) {
-			for(var id in players) {
-				var p = players[id];
-				refreshPlayer(p);
-				$('#li_'+ p.playerLogin).removeClass("in-progress");
-				$.mobile.loading('hide');
-			};
-		} 
+	d3.json("/rest/scores", function(players, error) {
+		for(var id in players) {
+			var p = players[id];
+			refreshPlayer(p);
+			$('#li_'+ p.playerLogin).removeClass("in-progress");
+			$.mobile.loading('hide');
+		}
 	});
 };
 
