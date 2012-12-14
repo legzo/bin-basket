@@ -1,34 +1,44 @@
 var height = 25;
 var width = 110;
+var initComplete = false;
 
-$(document).bind('pagebeforecreate', function() {
 
-	getFirstData();
-	
-	$('.player .ui-btn').live('vclick', function() {
-		var params = this.id.split('-');
+var initForPlayersPage = function() {
+		console.log("players page pagebeforecreate");
+		getFirstData();
 		
-		var player = params[0];
-		var result = params[1];
-		
-		$.mobile.loading('show', {
-			text: 'saving',
-			textVisible: true,
+		$('.player .ui-btn').live('vclick', function() {
+			var params = this.id.split('-');
+			
+			var player = params[0];
+			var result = params[1];
+			
+			$.mobile.loading('show', {
+				text: 'saving',
+				textVisible: true,
+			});
+			
+			$('#li_'+player).addClass("in-progress");
+			
+			$.ajax({
+			   url:'/rest/attempt/' + player + "/" + result,
+			   success: function(resultObject) {
+				   refreshData();
+			   } 
+			});
 		});
-		
-		$('#li_'+player).addClass("in-progress");
-		
-		$.ajax({
-		   url:'/rest/attempt/' + player + "/" + result,
-		   success: function(resultObject) {
-			   refreshData();
-		   } 
-		});
-	});
-});
+}
+
+var initForChartsPage = function() {
+	console.log("charts page pagebeforecreate");
+	if(!initComplete) {
+	} else {
+		$('#chartsPage').trigger( "create" );
+	}
+}
 
 var getFirstData = function() {
-	
+	console.log("getting first data");
 	$.ajax({
 	   url:'/rest/scores',
 	   success: function(players) {
@@ -37,15 +47,16 @@ var getFirstData = function() {
 				var p = players[id];
 				addPlayer(p);
 		   };
-			
-			$('#players-list').listview('refresh');
-			$('#my_page').trigger( "create" );
+		   
+		   console.log("triggering refresh");
+		   $('#players-list').listview('refresh');
+		   $('#playersPage').trigger( "create" );
 	   } 
 	});
 };
 
 var refreshData = function() {
-	
+	console.log("refreshing data");
 	$.ajax({
 		url:'/rest/scores',
 		success: function(players) {
@@ -75,6 +86,7 @@ var getData = function(accuracies, accuracy) {
 }
 
 var updateGraph = function(login, accuracies, accuracy) {
+	console.log("updating graph for " + login);
 	var data = getData(accuracies, accuracy);
 	
 	var horizon = d3.horizon()
@@ -95,6 +107,7 @@ var updateGraph = function(login, accuracies, accuracy) {
 }
 
 var addPlayer = function(p) {
+	console.log("adding player " + p.playerLogin);
 	var id = p.playerLogin;
 	var $li = $('<li/>');
 	$li.attr("id", "li_" + id);
@@ -142,6 +155,7 @@ var addPlayer = function(p) {
 };
 
 var refreshPlayer = function(p) {
+	console.log("refreshing player " + p.playerLogin);
 	var id = p.playerLogin;
 	$('#attempts_' + id).html(p.nbOfAttempts + ' shoots @');
 	

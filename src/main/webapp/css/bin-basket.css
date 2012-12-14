@@ -66,8 +66,13 @@ h1.title {
 	font-family: 'Yanone Kaffeesatz', sans-serif;
 	font-size: 3em;
 	margin: 6px 20px;
-	color: #4E10AE;
 	text-align: right;
+}
+
+h1.title a {
+	color: #4E10AE !important;
+	text-decoration: none;
+	
 }
 
 .ui-loader h1 {
