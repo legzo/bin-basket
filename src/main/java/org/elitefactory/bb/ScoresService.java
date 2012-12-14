@@ -54,34 +54,36 @@ public class ScoresService {
 		List<Player> players = attemptsDao.getPlayers();
 
 		for (final Player player : players) {
-			logger.debug("Player {}\n", player.getDisplayName());
 			final Score score = new Score(player);
 
 			final List<Attempt> attempts = getAllAttempts(player);
 
 			final int nbOfAttempts = attempts.size();
-			score.setNbOfAttempts(nbOfAttempts);
-			score.setAccuracy(getMeanForList(attempts));
 
-			int limit = nbOfAttempts - NB_OF_RECENT_ATTEMPTS;
-			if (limit < 0) {
-				limit = 0;
-			}
+			if (nbOfAttempts > 0) {
 
-			for (int index = nbOfAttempts; index > limit; index--) {
-				int start = index - NB_OF_RECENT_ATTEMPTS;
-				if (start < 0) {
-					start = 0;
+				score.setNbOfAttempts(nbOfAttempts);
+				score.setAccuracy(getMeanForList(attempts));
+
+				int limit = nbOfAttempts - NB_OF_RECENT_ATTEMPTS;
+				if (limit < 0) {
+					limit = 0;
 				}
-				List<Attempt> subList = attempts.subList(start, index);
-				float recentMean = getMeanForList(subList);
-				logger.debug("{}-{}, m={}", new Object[] { start, index, recentMean });
-				score.getAccuracies().put(index, recentMean);
+
+				for (int index = nbOfAttempts; index > limit; index--) {
+					int start = index - NB_OF_RECENT_ATTEMPTS;
+					if (start < 0) {
+						start = 0;
+					}
+					List<Attempt> subList = attempts.subList(start, index);
+					float recentMean = getMeanForList(subList);
+					score.getAccuracies().put(index, recentMean);
+				}
+
+				score.setRecentAccuracy(score.getAccuracies().get(nbOfAttempts));
+
+				scores.add(score);
 			}
-
-			score.setRecentAccuracy(score.getAccuracies().get(nbOfAttempts));
-
-			scores.add(score);
 		}
 
 		return writer.writeValueAsString(scores);
