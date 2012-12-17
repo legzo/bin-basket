@@ -1,46 +1,48 @@
 var height = 25;
 var width = 110;
 var initComplete = false;
-var margin = {top: 20, right: 60, bottom: 20, left: 50};
+var margin = {top: 20, right: 90, bottom: 20, left: 50};
 
 var initForPlayersPage = function() {
-		console.log("players page pagebeforecreate");
-		getFirstData();
+	$('#charts').hide();
+
+	console.log("players page pagebeforecreate");
+	getFirstData();
+	
+	$('.player .ui-btn').live('vclick', function() {
+		var params = this.id.split('-');
 		
-		$('.player .ui-btn').live('vclick', function() {
-			var params = this.id.split('-');
-			
-			var player = params[0];
-			var result = params[1];
-			
-			$.mobile.loading('show', {
-				text: 'saving',
-				textVisible: true,
-			});
-			
-			$('#li_'+player).addClass("in-progress");
-			
-			$.ajax({
-			   url:'/rest/attempt/' + player + "/" + result,
-			   success: function(resultObject) {
-				   refreshPlayersData();
-			   } 
-			});
+		var player = params[0];
+		var result = params[1];
+		
+		$.mobile.loading('show', {
+			text: 'saving',
+			textVisible: true,
 		});
 		
-		initForChartsPage(false);
+		$('#li_'+player).addClass("in-progress");
 		
-		$('#linkCharts').live('vclick', function() {
-			$('#players-list').hide();
-			$('#charts').show();
-			getDataAndUpdateLineChart();
+		$.ajax({
+		   url:'/rest/attempt/' + player + "/" + result,
+		   success: function(resultObject) {
+			   refreshPlayersData();
+		   } 
 		});
-		
-		$('#linkPlayers').live('vclick', function() {
-			$('#charts').hide();
-			$('#players-list').show();
-			refreshPlayersData();
-		});
+	});
+	
+	initForChartsPage(false);
+	
+	$('#linkCharts').live('vclick', function() {
+		$('#players-list').hide();
+		$('#charts').show();
+		getDataAndUpdateLineChart();
+	});
+	
+	$('#linkPlayers').live('vclick', function() {
+		$('#charts').hide();
+		$('#players-list').show();
+		refreshPlayersData();
+	});
 }
 
 var initForChartsPage = function(needData) {
@@ -132,7 +134,7 @@ var updateLineChart = function(suffix, players) {
 	    .attr("x", 3)
 	    .attr("dy", ".35em")
 	    .style("fill", function(d) { return color(d.name); })
-	    .text(function(d) { return d.name; });
+	    .text(function(d) { return d.name +" : " + (d.value.value * 100).toFixed(1)});
 	
 	var playerUpdate = svgRecent.selectAll(".playerLine path")
 		.data(players)
