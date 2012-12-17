@@ -1,7 +1,7 @@
 var height = 25;
 var width = 110;
 var initComplete = false;
-var margin = {top: 20, right: 50, bottom: 20, left: 50};
+var margin = {top: 20, right: 60, bottom: 20, left: 50};
 
 var initForPlayersPage = function() {
 		console.log("players page pagebeforecreate");
@@ -33,12 +33,13 @@ var initForPlayersPage = function() {
 		
 		$('#linkCharts').live('vclick', function() {
 			$('#players-list').hide();
-			$('#chart').show();
-			updateLineChart();
+			$('#charts').show();
+			getDataAndUpdateRecentLineChart();
+			getDataAndUpdateTotalLineChart();
 		});
 		
 		$('#linkPlayers').live('vclick', function() {
-			$('#chart').hide();
+			$('#charts').hide();
 			$('#players-list').show();
 			refreshPlayersData();
 		});
@@ -46,98 +47,118 @@ var initForPlayersPage = function() {
 
 var initForChartsPage = function(needData) {
 	console.log("charts page pagebeforecreate");
-		
 	var width = $(window).width() - margin.left - margin.right,
     height = width * 0.75 - margin.top - margin.bottom;
 
-	var svg = d3.select("#chart").append("svg")
+	var svg = d3.select("#chart-recent").append("svg")
 	    .attr("width", width + margin.left + margin.right)
 	    .attr("height", height + margin.top + margin.bottom)
 	  .append("g")
 	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	if(needData){
-		updateLineChart();
-	}
+	
+	var svg = d3.select("#chart-total").append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 }
 
-var updateLineChart = function() {
-	
+var getDataAndUpdateRecentLineChart = function() {
 	d3.json("/rest/scores", function(data, error) {
-		
-		var width = $(window).width() - margin.left - margin.right,
-	    height = width * 0.75 - margin.top - margin.bottom;
-		
-		var svg = d3.select("#chart svg g");
-		
-		var players = getDataForLineChart(data);
-		var x = d3.scale.linear()
-    		.range([0, width]);
-
-		var y = d3.scale.linear()
-		    .range([height, 0]);
-	
-		var color = d3.scale.category20c();
-	
-		var xAxis = d3.svg.axis()
-		    .scale(x)
-		    .orient("bottom");
-	
-		var yAxis = d3.svg.axis()
-		    .scale(y)
-		    .orient("left");
-	
-		var line = d3.svg.line()
-		    .interpolate("basis")
-		    .x(function(d) { return x(d.index);	})
-		    .y(function(d) { return y(d.value); });
-		
-		color.domain(d3.keys(players));
-	
-		x.domain([0, 100]);
-	
-		y.domain([0, 0.6]);
-		
-		svg.append("g")
-		    .attr("class", "x axis")
-		    .attr("transform", "translate(0," + height + ")")
-		    .call(xAxis);
-	
-		svg.append("g")
-		  .attr("class", "y axis")
-		  .call(yAxis);
-		
-		var player = svg.selectAll(".playerLine")
-		  .data(players)
-		  .enter()
-		  .append("g")
-		  .attr("class", "playerLine");
-		
-		player.append("path")
-		    .attr("class", "line")
-		    .attr("d",  function(d) { return line(d.values); })
-		    .style("stroke", function(d) { return color(d.name); });
-		
-		player.append("text")
-		    .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-		    .attr("transform", function(d) { return "translate(" + x(d.value.index) + "," + y(d.value.value) + ")"; })
-		    .attr("x", 3)
-		    .attr("dy", ".35em")
-		    .text(function(d) { return d.name; });
-		
-		var playerUpdate = svg.selectAll(".playerLine path")
-			.data(players)
-			.attr("d",  function(d) { return line(d.values); })
-		
+		var players = getDataForLineChart(data, true);
+		updateLineChart("recent", players);
 	});
 }
 
-var getDataForLineChart = function(data) {
+var getDataAndUpdateTotalLineChart = function() {
+	d3.json("/rest/scores", function(data, error) {
+		var players = getDataForLineChart(data, false);
+		updateLineChart("total", players);
+	});
+}
+
+var updateLineChart = function(suffix, players) {
+	
+	var width = $(window).width() - margin.left - margin.right,
+    height = width * 0.75 - margin.top - margin.bottom;
+	
+	var svgRecent = d3.select("#chart-" + suffix + " svg g");
+	
+	var x = d3.scale.linear()
+		.range([0, width]);
+
+	var y = d3.scale.linear()
+	    .range([height, 0]);
+
+	var color = d3.scale.category20c();
+
+	var xAxis = d3.svg.axis()
+	    .scale(x)
+	    .orient("bottom");
+
+	var yAxis = d3.svg.axis()
+	    .scale(y)
+	    .orient("left");
+
+	var line = d3.svg.line()
+	    .interpolate("basis")
+	    .x(function(d) { return x(d.index);	})
+	    .y(function(d) { return y(d.value); });
+	
+	color.domain(d3.keys(players));
+
+	x.domain([0, 100]);
+
+	var yMax = suffix === 'recent' ? 0.6 : 0.3;
+	
+	y.domain([0, yMax]);
+	
+	svgRecent.append("g")
+	    .attr("class", "x axis")
+	    .attr("transform", "translate(0," + height + ")")
+	    .call(xAxis);
+
+	svgRecent.append("g")
+	  .attr("class", "y axis")
+	  .call(yAxis);
+	
+	var player = svgRecent.selectAll(".playerLine")
+	  .data(players)
+	  .enter()
+	  .append("g")
+	  .attr("class", "playerLine");
+	
+	player.append("path")
+	    .attr("class", "line")
+	    .attr("d",  function(d) { return line(d.values); })
+	    .style("stroke", function(d) { return color(d.name); });
+	
+	player.append("text")
+	    .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+	    .attr("transform", function(d) { return "translate(" + x(d.value.index) + "," + y(d.value.value) + ")"; })
+	    .attr("x", 3)
+	    .attr("dy", ".35em")
+	    .style("stroke", function(d) { return color(d.name); })
+	    .text(function(d) { return d.name; });
+	
+	var playerUpdate = svgRecent.selectAll(".playerLine path")
+		.data(players)
+		.attr("d",  function(d) { return line(d.values); })
+	
+}
+
+var getDataForLineChart = function(data, isRecent) {
 	return d3.keys(data).map(function(i) {
 		var idx = 1;
 		var values = [];
 		
-		for(var id in data[i].accuracies) {
-			var a = data[i].accuracies[id];
+		var dataz = data[i].accuracies;
+		if(isRecent) {
+			dataz = data[i].recentAccuracies;
+		}
+		
+		for(var id in dataz) {
+			var a = dataz[id];
 			
 			values.push({index: idx, value: a});
 			idx++;
@@ -178,11 +199,11 @@ var refreshPlayersData = function() {
 	});
 };
 
-var getData = function(accuracies, accuracy) {
+var getData = function(recentAccuracies, accuracy) {
 	var data = [];
 	
-	for(var id in accuracies) {
-		var a = accuracies[id];
+	for(var id in recentAccuracies) {
+		var a = recentAccuracies[id];
 		
 		data.push([
 			parseInt(id),
@@ -193,9 +214,9 @@ var getData = function(accuracies, accuracy) {
 	return data;
 }
 
-var updateGraph = function(login, accuracies, accuracy) {
+var updateGraph = function(login, recentAccuracies, accuracy) {
 	console.log("updating graph for " + login);
-	var data = getData(accuracies, accuracy);
+	var data = getData(recentAccuracies, accuracy);
 	
 	var horizon = d3.horizon()
 	    .width(width)
@@ -270,7 +291,7 @@ var refreshPlayer = function(p) {
 	$('#accuracy_' + id).html(asPercent(p.accuracy));
 	$('#recentAccuracy_' + id).html(asPercent(p.recentAccuracy));
 	
-	updateGraph(p.playerLogin, p.accuracies, p.accuracy);
+	updateGraph(p.playerLogin, p.recentAccuracies, p.accuracy);
 };
 
 var asPercent = function(acc) {

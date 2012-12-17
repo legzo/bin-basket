@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
+import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.elitefactory.bb.Attempt.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +28,8 @@ public class ScoresService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ScoresService.class);
 
-	// private static ObjectWriter writer = new ObjectMapper().writer(new DefaultPrettyPrinter());
-	private static ObjectWriter writer = new ObjectMapper().writer();
+	private static ObjectWriter writer = new ObjectMapper().writer(new DefaultPrettyPrinter());
+	// private static ObjectWriter writer = new ObjectMapper().writer();
 
 	@Autowired
 	private AttemptsDao attemptsDao;
@@ -63,7 +64,22 @@ public class ScoresService {
 			if (nbOfAttempts > 0) {
 
 				score.setNbOfAttempts(nbOfAttempts);
-				score.setAccuracy(getMeanForList(attempts));
+
+				int hits = 0;
+				int allSoFar = 0;
+
+				for (final Attempt attempt : attempts) {
+					if (attempt.getResult() == Result.hit) {
+						hits++;
+					}
+					allSoFar++;
+
+					if (allSoFar > nbOfAttempts - NB_OF_RECENT_ATTEMPTS) {
+						score.getAccuracies().put(Integer.valueOf(allSoFar), (float) hits / allSoFar);
+					}
+				}
+
+				score.setAccuracy((float) hits / attempts.size());
 
 				int limit = nbOfAttempts - NB_OF_RECENT_ATTEMPTS;
 				if (limit < 0) {
@@ -77,10 +93,10 @@ public class ScoresService {
 					}
 					List<Attempt> subList = attempts.subList(start, index);
 					float recentMean = getMeanForList(subList);
-					score.getAccuracies().put(index, recentMean);
+					score.getRecentAccuracies().put(index, recentMean);
 				}
 
-				score.setRecentAccuracy(score.getAccuracies().get(nbOfAttempts));
+				score.setRecentAccuracy(score.getRecentAccuracies().get(nbOfAttempts));
 
 				scores.add(score);
 			}
