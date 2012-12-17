@@ -62,17 +62,22 @@
 	color: #FFA400;
 }
 
-h1.title {
-	font-family: 'Yanone Kaffeesatz', sans-serif;
-	font-size: 3em;
-	margin: 6px 20px;
+.title {
+	padding: 10px 5px;
 	text-align: right;
 }
 
-h1.title a {
+.title span {
+	font-family: 'Yanone Kaffeesatz', sans-serif;
+	font-size: 3em;
+	font-weight: bold;
 	color: #4E10AE !important;
-	text-decoration: none;
-	
+	padding-right: 6px;
+}
+
+.title img {
+	padding: 6px;
+	vertical-align: -10px;
 }
 
 .ui-loader h1 {

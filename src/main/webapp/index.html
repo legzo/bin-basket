@@ -23,11 +23,16 @@
 
 <body>
 	<div id="playersPage" data-role="page">
-		<h1 class="title"><a href="charts.html">± rankings :</a></h1>
-
+		<div class="title">
+			<span>± rankings</span>
+			<img id="linkPlayers" src="img/users.png" />
+			<img id="linkCharts" src="img/charts.png" />
+		</div>
 		<ul id="players-list" data-role="listview">
 		
 		</ul>
+		
+		<div id="chart"></div>
 		
 		<script type="text/javascript">
 			initForPlayersPage();
