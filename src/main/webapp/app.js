@@ -30,12 +30,10 @@ var initForPlayersPage = function() {
 		
 		initForChartsPage(false);
 		
-		
 		$('#linkCharts').live('vclick', function() {
 			$('#players-list').hide();
 			$('#charts').show();
-			getDataAndUpdateRecentLineChart();
-			getDataAndUpdateTotalLineChart();
+			getDataAndUpdateLineChart();
 		});
 		
 		$('#linkPlayers').live('vclick', function() {
@@ -63,17 +61,10 @@ var initForChartsPage = function(needData) {
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 }
 
-var getDataAndUpdateRecentLineChart = function() {
+var getDataAndUpdateLineChart = function() {
 	d3.json("/rest/scores", function(data, error) {
-		var players = getDataForLineChart(data, true);
-		updateLineChart("recent", players);
-	});
-}
-
-var getDataAndUpdateTotalLineChart = function() {
-	d3.json("/rest/scores", function(data, error) {
-		var players = getDataForLineChart(data, false);
-		updateLineChart("total", players);
+		updateLineChart("recent", getDataForLineChart(data, true));
+		updateLineChart("total", getDataForLineChart(data, false));
 	});
 }
 
@@ -90,7 +81,8 @@ var updateLineChart = function(suffix, players) {
 	var y = d3.scale.linear()
 	    .range([height, 0]);
 
-	var color = d3.scale.category20c();
+	var color = d3.scale.ordinal()
+		.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
 	var xAxis = d3.svg.axis()
 	    .scale(x)
@@ -108,10 +100,11 @@ var updateLineChart = function(suffix, players) {
 	color.domain(d3.keys(players));
 
 	x.domain([0, 100]);
-
-	var yMax = suffix === 'recent' ? 0.6 : 0.3;
 	
-	y.domain([0, yMax]);
+	y.domain([
+      d3.min(players, function(c) { return d3.min(c.values, function(v) { return v.value; }); }),
+      d3.max(players, function(c) { return d3.max(c.values, function(v) { return v.value; }); })
+    ]);
 	
 	svgRecent.append("g")
 	    .attr("class", "x axis")
@@ -138,7 +131,7 @@ var updateLineChart = function(suffix, players) {
 	    .attr("transform", function(d) { return "translate(" + x(d.value.index) + "," + y(d.value.value) + ")"; })
 	    .attr("x", 3)
 	    .attr("dy", ".35em")
-	    .style("stroke", function(d) { return color(d.name); })
+	    .style("fill", function(d) { return color(d.name); })
 	    .text(function(d) { return d.name; });
 	
 	var playerUpdate = svgRecent.selectAll(".playerLine path")
@@ -215,11 +208,10 @@ var getData = function(recentAccuracies, accuracy) {
 }
 
 var updateGraph = function(login, recentAccuracies, accuracy) {
-	console.log("updating graph for " + login);
 	var data = getData(recentAccuracies, accuracy);
 	
 	var horizon = d3.horizon()
-	    .width(width)
+	    .width(horizonWidth())
 	    .height(height)
 	    .mode("mirror")
 	    .bands(3)
@@ -236,7 +228,6 @@ var updateGraph = function(login, recentAccuracies, accuracy) {
 }
 
 var addPlayer = function(p) {
-	console.log("adding player " + p.playerLogin);
 	var id = p.playerLogin;
 	var $li = $('<li/>');
 	$li.attr("id", "li_" + id);
@@ -277,14 +268,21 @@ var addPlayer = function(p) {
 	$('#players-list').append($li);
 
 	var svg = d3.select("#graph_" + id).append("svg")
-		.attr("width", width)
+		.attr("width", horizonWidth())
 		.attr("height", height);
 
 	refreshPlayer(p);
 };
 
+var horizonWidth = function() {
+	var result = Math.floor($(window).width() * 0.56 - 75);
+	if(result < 110) {
+		result = 110;
+	}
+	return result;
+}
+
 var refreshPlayer = function(p) {
-	console.log("refreshing player " + p.playerLogin);
 	var id = p.playerLogin;
 	$('#attempts_' + id).html(p.nbOfAttempts + ' shoots @');
 	

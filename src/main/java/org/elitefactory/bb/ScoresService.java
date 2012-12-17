@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
-import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.elitefactory.bb.Attempt.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +27,8 @@ public class ScoresService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ScoresService.class);
 
-	private static ObjectWriter writer = new ObjectMapper().writer(new DefaultPrettyPrinter());
-	// private static ObjectWriter writer = new ObjectMapper().writer();
+	// private static ObjectWriter writer = new ObjectMapper().writer(new DefaultPrettyPrinter());
+	private static ObjectWriter writer = new ObjectMapper().writer();
 
 	@Autowired
 	private AttemptsDao attemptsDao;
